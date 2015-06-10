@@ -1,68 +1,43 @@
 class Player
-  def play_turn(warrior)
-    @best_health = 20
-    @health ||= @best_health
 
+  def initialize
+    @best_health = 20
+    # using the or equals we saw in POODIR, sets health to best_health if doesn't exist
+    @health ||= @best_health
+  end
+
+  def play_turn(warrior)
     getting_hurt?(warrior)
-    possible_action(warrior)
+    possible_move(warrior)
     check_health(warrior)
   end
 
   def getting_hurt?(warrior)
+    # if health is declining, warrior is being attacked
     @attacked = @health > warrior.health
   end
 
-  def possible_action(warrior)
-    if warrior.feel.captive? == true && warrior.feel.wall? == false
-      warrior.walk!(:backward)
-    elsif warrior.feel.captive? == true
-      warrior.rescue!
-    elsif @attacked == true && warrior.feel.empty? == true
-      warrior.walk!
-    elsif @attacked == true && warrior.feel.empty? == false
-      warrior.attack!
-    elsif @attacked == false && warrior.feel.empty? == false && warrior.health == @best_health
-        warrior.attack!
-    elsif @attacked == false && warrior.feel.empty? == true && warrior.health == @best_health
-        warrior.walk!
-    elsif @attacked == false && warrior.health < @best_health
-        warrior.rest!
-    end
-  end
-
-  def check_health(warrior)
-    @health = warrior.health
-  end
-end
-class Player
-  def play_turn(warrior)
-    @best_health = 20
-    @health ||= @best_health
-
-    getting_hurt?(warrior)
-    possible_action(warrior)
-    check_health(warrior)
-    end
-
-  def getting_hurt?(warrior)
-    @attacked = @health > warrior.health
-  end
-
-  def possible_action(warrior)
+  def possible_move(warrior)
+    # moves forward if being attacked
     if @attacked == true && warrior.feel.empty? == true
       warrior.walk!
+    # attack if being attacked and enemy is in next square
     elsif @attacked == true && warrior.feel.empty? == false
       warrior.attack!
+    # keep attacking if enemy still there and recuperated
     elsif @attacked == false && warrior.feel.empty? == false && warrior.health == @best_health
         warrior.attack!
+    # walk once fully recuperated and enemy vanquished
     elsif @attacked == false && warrior.feel.empty? == true && warrior.health == @best_health
         warrior.walk!
+    # if not being attacked, rest to restore health score
     elsif @attacked == false && warrior.health < @best_health
         warrior.rest!
     end
   end
 
   def check_health(warrior)
+    # check in order to be able to see if health declining
     @health = warrior.health
   end
 end
